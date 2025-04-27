@@ -97,4 +97,77 @@
 - 更深入的内容智能分析能力
 - 更丰富的模板和资源库
 - 更精确的用户意图预测
-- 跨平台内容编辑与同步 
+- 跨平台内容编辑与同步
+
+# cursorBrain0427
+
+WeChat Mini Program project with automatic GitHub synchronization.
+
+## Synchronization with GitHub
+
+This repository is set up to automatically synchronize with GitHub. The script `sync.sh` has been created to help with this process.
+
+### Using the Sync Script
+
+The sync script provides several options:
+
+1. **Normal Sync** - Pull the latest changes, commit your changes, and push them:
+   ```
+   ./sync.sh "Your commit message"
+   ```
+
+2. **Offline Mode** - Commit changes without pulling or pushing (for when you don't have internet):
+   ```
+   ./sync.sh --offline "Your commit message"
+   ```
+
+3. **Push Only** - Push existing local commits without making new commits:
+   ```
+   ./sync.sh --push-only
+   ```
+
+4. **Check Status** - Show the current status of your repository:
+   ```
+   ./sync.sh --status
+   ```
+
+### Setting Up Automatic Synchronization
+
+To set up automatic synchronization, you can use either cron jobs (Linux/Mac) or Task Scheduler (Windows).
+
+#### For Mac/Linux (using cron):
+
+1. Open Terminal and edit your crontab:
+   ```
+   crontab -e
+   ```
+
+2. Add a line to run the sync script every hour (adjust the path as needed):
+   ```
+   0 * * * * cd /path/to/cursorBrain0427 && ./sync.sh "Auto sync $(date)"
+   ```
+
+#### For Windows (using Task Scheduler):
+
+1. Open Task Scheduler
+2. Create a new Basic Task
+3. Set it to run daily or at your preferred interval
+4. Set the action to "Start a program"
+5. Browse to the location of your bash executable (git bash or WSL)
+6. Add arguments: `-c "cd /path/to/cursorBrain0427 && ./sync.sh 'Auto sync'"` 
+
+### Manual Push When Connection Is Available
+
+If you've been working offline and want to push your changes when internet is available:
+
+```
+./sync.sh --push-only
+```
+
+## Project Structure
+
+[Describe your project structure here]
+
+## Development Guidelines
+
+[Add any development guidelines here] 
