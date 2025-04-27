@@ -1,0 +1,118 @@
+<view class="detail-container">
+  <!-- Header with back button -->
+  <view class="detail-header">
+    <view class="back-button" bindtap="goBack">
+      <text class="back-icon">←</text>
+    </view>
+    <text class="header-title">{{item.title || '详情'}}</text>
+    <view class="header-actions">
+      <view class="action-more" bindtap="showMoreOptions">
+        <text>···</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- Content section -->
+  <view class="detail-content">
+    <!-- Cover image and title section -->
+    <view class="content-header">
+      <image class="detail-cover" src="{{item.coverUrl}}" mode="aspectFill"></image>
+      <view class="detail-info">
+        <text class="detail-title">{{item.title}}</text>
+        <text class="detail-author">{{item.author}}</text>
+        <text class="detail-category">{{item.category}}</text>
+        <text class="detail-date">{{item.updateTime}}</text>
+      </view>
+    </view>
+
+    <!-- Main content -->
+    <view class="content-body">
+      <!-- Content description -->
+      <view class="content-section">
+        <text class="section-title">简介</text>
+        <text class="content-text">{{item.description}}</text>
+      </view>
+
+      <!-- Content chapters or sections -->
+      <view class="content-section" wx:if="{{item.chapters && item.chapters.length > 0}}">
+        <text class="section-title">章节</text>
+        <view class="chapter-list">
+          <view class="chapter-item" wx:for="{{item.chapters}}" wx:for-item="chapter" wx:key="id" bindtap="openChapter" data-id="{{chapter.id}}">
+            <text class="chapter-title">{{chapter.title}}</text>
+            <text class="chapter-info">{{chapter.wordCount}}字 · {{chapter.updateTime}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- Related content -->
+      <view class="content-section">
+        <text class="section-title">相关推荐</text>
+        <scroll-view scroll-x class="related-list">
+          <view class="related-item" wx:for="{{relatedItems}}" wx:key="id" bindtap="openRelatedItem" data-id="{{item.id}}">
+            <image class="related-cover" src="{{item.coverUrl}}" mode="aspectFill"></image>
+            <text class="related-title">{{item.title}}</text>
+          </view>
+        </scroll-view>
+      </view>
+    </view>
+  </view>
+
+  <!-- Comments section -->
+  <view class="comments-section">
+    <view class="section-header">
+      <text class="section-title">评论 ({{comments.length}})</text>
+      <text class="write-comment" bindtap="showCommentInput">写评论</text>
+    </view>
+    
+    <view class="comment-list" wx:if="{{comments.length > 0}}">
+      <view class="comment-item" wx:for="{{comments}}" wx:key="id">
+        <image class="comment-avatar" src="{{item.avatarUrl}}"></image>
+        <view class="comment-content">
+          <view class="comment-header">
+            <text class="comment-username">{{item.username}}</text>
+            <text class="comment-time">{{item.time}}</text>
+          </view>
+          <text class="comment-text">{{item.content}}</text>
+          <view class="comment-actions">
+            <view class="comment-action" bindtap="likeComment" data-id="{{item.id}}">
+              <text class="action-icon {{item.isLiked ? 'liked' : ''}}">♥</text>
+              <text class="action-count">{{item.likeCount || 0}}</text>
+            </view>
+            <view class="comment-action" bindtap="replyComment" data-id="{{item.id}}">
+              <text class="action-icon">↩</text>
+              <text>回复</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <view class="no-comments" wx:else>
+      <text>暂无评论，快来发表第一条评论吧</text>
+    </view>
+  </view>
+
+  <!-- Action bar for user interactions -->
+  <action-bar 
+    item-id="{{itemId}}" 
+    item-type="{{itemType}}" 
+    is-floating="{{true}}"
+    bind:customshare="onCustomShare">
+  </action-bar>
+
+  <!-- Comment input area (initially hidden) -->
+  <view class="comment-input-container {{isCommentInputVisible ? 'visible' : 'hidden'}}">
+    <view class="comment-input-header">
+      <text>发表评论</text>
+      <view class="close-comment" bindtap="hideCommentInput">×</view>
+    </view>
+    <textarea class="comment-textarea" placeholder="写下你的评论..." value="{{commentText}}" bindinput="onCommentTextChange" maxlength="500" auto-height></textarea>
+    <view class="comment-input-footer">
+      <text class="character-count">{{commentText.length}}/500</text>
+      <button class="submit-comment" bindtap="submitComment">发表</button>
+    </view>
+  </view>
+
+  <!-- Overlay for modal content -->
+  <view class="overlay {{isOverlayVisible ? 'visible' : 'hidden'}}" bindtap="hideOverlay"></view>
+</view> 

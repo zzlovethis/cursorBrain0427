@@ -1,0 +1,22 @@
+<!-- actionBar.wxml -->
+<view class="action-bar {{isFloating ? 'floating' : ''}}">
+  <view class="action-item {{isActive.view ? 'active' : ''}}" bindtap="handleView">
+    <view class="icon-view"></view>
+    <text>{{stats.viewCount || 0}}</text>
+  </view>
+  
+  <view class="action-item {{isActive.like ? 'active' : ''}}" bindtap="handleLike">
+    <view class="icon-like"></view>
+    <text>{{stats.likeCount || 0}}</text>
+  </view>
+  
+  <view class="action-item {{isActive.bookmark ? 'active' : ''}}" bindtap="handleBookmark">
+    <view class="icon-bookmark"></view>
+    <text>{{stats.bookmarkCount || 0}}</text>
+  </view>
+  
+  <view class="action-item" bindtap="handleShare">
+    <view class="icon-share"></view>
+    <text>{{stats.shareCount || 0}}</text>
+  </view>
+</view> 

@@ -1,0 +1,418 @@
+<view class="main-container">
+  <!-- 原来的阅读界面 -->
+  <view class="reading-interface">
+    <!-- 顶部分类导航 -->
+    <view class="category-navigation">
+      <view class="category-item active">精选</view>
+      <view class="category-item">分类</view>
+      <view class="category-item">榜单</view>
+      <view class="category-item">听书</view>
+      <view class="category-item">小说</view>
+    </view>
+
+    <!-- 精选书籍区域 -->
+    <view class="book-section">
+      <view class="section-header">
+        <text class="section-title">主编推荐</text>
+        <text class="more-link">更多 ></text>
+      </view>
+      <scroll-view scroll-x class="book-list">
+        <view class="book-item" wx:for="{{recommendedBooks}}" wx:key="id">
+          <image class="book-cover" src="{{item.coverUrl}}" mode="aspectFill"></image>
+          <text class="book-title">{{item.title}}</text>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 热门书籍区域 -->
+    <view class="book-section">
+      <view class="section-header">
+        <text class="section-title">热门好书</text>
+        <text class="more-link">更多 ></text>
+      </view>
+      <scroll-view scroll-x class="book-list">
+        <view class="book-item" wx:for="{{popularBooks}}" wx:key="id">
+          <image class="book-cover" src="{{item.coverUrl}}" mode="aspectFill"></image>
+          <text class="book-title">{{item.title}}</text>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 其他书籍区域 -->
+    <view class="book-section" wx:for="{{otherBookSections}}" wx:key="id">
+      <view class="section-header">
+        <text class="section-title">{{item.title}}</text>
+        <text class="more-link">更多 ></text>
+      </view>
+      <scroll-view scroll-x class="book-list">
+        <view class="book-item" wx:for="{{item.books}}" wx:for-item="book" wx:key="id">
+          <image class="book-cover" src="{{book.coverUrl}}" mode="aspectFill"></image>
+          <text class="book-title">{{book.title}}</text>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <!-- 可拖拽的悬浮按钮 -->
+  <view class="floating-button {{carouselVisible ? 'active' : ''}} {{isDragging ? 'dragging' : ''}}" 
+        catchtap="toggleCarousel" 
+        bindtouchstart="buttonTouchStart" 
+        bindtouchmove="buttonTouchMove" 
+        bindtouchend="buttonTouchEnd"
+        style="top: {{buttonPosition.y}}px; left: {{buttonPosition.x}}px; transform: scale({{buttonScale || 1}}) {{carouselVisible ? 'rotate(45deg)' : ''}};">
+    <view class="button-icon">
+      <view class="button-icon-middle"></view>
+    </view>
+  </view>
+
+  <!-- 遮罩层 -->
+  <view class="panel-overlay {{carouselVisible ? 'visible' : 'hidden'}}" bindtap="closePanel"></view>
+
+  <!-- 悬浮轮播图面板 -->
+  <view class="carousel-panel {{carouselVisible ? 'visible' : 'hidden'}}">
+    <swiper class="main-swiper" indicator-dots="{{false}}" autoplay="{{false}}" interval="5000" duration="500" circular="{{true}}" current="{{currentSwiperIndex}}" bindchange="swiperChange">
+      
+      <!-- 第一页：公告板 -->
+      <swiper-item>
+        <view class="swiper-page announcement-page dot-bg scroll-page">
+          <view class="header">
+            <view class="decoration-image"></view>
+            <text class="title">{{headerTitle}}</text>
+            <view class="decoration-image"></view>
+          </view>
+          
+          <!-- 内容区域 - 非编辑模式时显示的完成品内容 -->
+          <scroll-view scroll-y="true" class="scrollable-content {{!isWysiwygMode ? 'active' : 'hide'}}">
+            <view class="content-box">
+              <view class="quote-content left-aligned">
+                <text class="title">{{quoteText1}}</text>
+                <text class="title" style="margin-top: 40rpx;">{{quoteText2}}</text>
+                <text class="title" style="margin-top: 20rpx;">{{quoteText3}}</text>
+              </view>
+            </view>
+          </scroll-view>
+          
+          <!-- 中央控制区域 - 编辑按钮 -->
+          <view class="center-control-area" wx:if="{{!isWysiwygMode}}">
+            <view class="bottom-edit-btn compact-btn" catchtap="toggleWYSIWYGMode">
+              <text>编辑</text>
+            </view>
+            <!-- 自定义指示点 -->
+            <view class="indicator-dots">
+              <view class="custom-dot {{currentSwiperIndex === 0 ? 'active' : ''}}" bindtap="switchToPage" data-index="0"></view>
+              <view class="custom-dot {{currentSwiperIndex === 1 ? 'active' : ''}}" bindtap="switchToPage" data-index="1"></view>
+              <view class="custom-dot {{currentSwiperIndex === 2 ? 'active' : ''}}" bindtap="switchToPage" data-index="2"></view>
+              <view class="custom-dot {{currentSwiperIndex === 3 ? 'active' : ''}}" bindtap="switchToPage" data-index="3"></view>
+              <view class="custom-dot {{currentSwiperIndex === 4 ? 'active' : ''}}" bindtap="switchToPage" data-index="4"></view>
+              <view class="custom-dot {{currentSwiperIndex === 5 ? 'active' : ''}}" bindtap="switchToPage" data-index="5"></view>
+            </view>
+          </view>
+        </view>
+      </swiper-item>
+      
+      <!-- 第二页：功能引导页 -->
+      <swiper-item>
+        <view class="swiper-page guide-page dot-bg">
+          <view class="header">
+            <text class="header-number">750904</text>
+          </view>
+          <view class="guide-content">
+            <view class="guide-item">
+              <view class="guide-icon">1</view>
+              <text class="guide-text">左右滑动切换不同功能板块</text>
+            </view>
+            <view class="guide-item">
+              <view class="guide-icon">2</view>
+              <text class="guide-text">点击九宫格图标进入对应功能</text>
+            </view>
+            <view class="guide-item">
+              <view class="guide-icon">3</view>
+              <text class="guide-text">底部搜索框可快速检索内容</text>
+            </view>
+            <view class="guide-item">
+              <view class="guide-icon">4</view>
+              <text class="guide-text">最后一页可进行个人设置</text>
+            </view>
+          </view>
+          <view class="bottom-section">
+            <view class="search-bar">
+              <input type="text" placeholder="搜索..." placeholder-style="color: white;" bindconfirm="onSearch"/>
+              <view class="search-icon">
+                <text class="icon">▶</text>
+              </view>
+            </view>
+            <text class="phone-number">{{phoneNumber}}</text>
+          </view>
+        </view>
+      </swiper-item>
+      
+      <!-- 第三页：主模块列表（九宫格） -->
+      <swiper-item>
+        <view class="swiper-page modules-page dot-bg">
+          <view class="header">
+            <text class="header-number">750904</text>
+          </view>
+          <view class="module-grid">
+            <view class="grid-item" wx:for="{{moduleItems}}" wx:key="id" bindtap="navigateToModule" data-id="{{item.id}}">
+              <view class="grid-box"></view>
+              <text class="grid-text">{{item.name}}</text>
+            </view>
+          </view>
+          <view class="bottom-section">
+            <view class="search-bar">
+              <input type="text" placeholder="搜索..." placeholder-style="color: white;" bindconfirm="onSearch"/>
+              <view class="search-icon">
+                <text class="icon">▶</text>
+              </view>
+            </view>
+            <text class="phone-number">{{phoneNumber}}</text>
+          </view>
+        </view>
+      </swiper-item>
+      
+      <!-- 第四页：工具选项列表 -->
+      <swiper-item>
+        <view class="swiper-page tools-page dot-bg">
+          <view class="header">
+            <text class="header-number">750904</text>
+          </view>
+          <view class="tools-content">
+            <view class="menu-container">
+              <!-- Left menu items -->
+              <view class="menu-items">
+                <view class="menu-item" wx:for="{{toolItems}}" wx:key="id" bindtap="navigateToTool" data-id="{{item.id}}">
+                  <view class="menu-box"></view>
+                </view>
+              </view>
+              
+              <!-- Right labels -->
+              <view class="labels">
+                <view class="label-item" wx:for="{{toolItems}}" wx:key="id">
+                  <view class="label-box"></view>
+                  <text>{{item.name}}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+          <view class="bottom-section">
+            <view class="search-bar">
+              <input type="text" placeholder="搜索..." placeholder-style="color: white;" bindconfirm="onSearch"/>
+              <view class="search-icon">
+                <text class="icon">▶</text>
+              </view>
+            </view>
+            <text class="phone-number">{{phoneNumber}}</text>
+          </view>
+        </view>
+      </swiper-item>
+      
+      <!-- 第五页：消息交流区 -->
+      <swiper-item>
+        <view class="swiper-page message-page dot-bg">
+          <view class="header">
+            <text class="header-number">750904</text>
+          </view>
+          <view class="message-content">
+            <view class="message-section">
+              <view class="section-title">
+                <text>消息列表</text>
+              </view>
+              <view class="message-list">
+                <view class="message-item" wx:for="{{messageList}}" wx:key="id" bindtap="openMessage" data-id="{{item.id}}">
+                  <view class="message-box"></view>
+                  <text class="message-info">{{item.name}}</text>
+                </view>
+              </view>
+            </view>
+            <view class="message-section">
+              <view class="section-title">
+                <text>AI对话</text>
+              </view>
+              <view class="ai-chat">
+                <view class="ai-button" bindtap="startDeepSeekChat">
+                  <view class="ai-box"></view>
+                  <text>开始DeepSeek对话</text>
+                </view>
+              </view>
+            </view>
+          </view>
+          <view class="bottom-section">
+            <view class="search-bar">
+              <input type="text" placeholder="搜索..." placeholder-style="color: white;" bindconfirm="onSearch"/>
+              <view class="search-icon">
+                <text class="icon">▶</text>
+              </view>
+            </view>
+            <text class="phone-number">{{phoneNumber}}</text>
+          </view>
+        </view>
+      </swiper-item>
+      
+      <!-- 第六页：个人设置区 -->
+      <swiper-item>
+        <view class="swiper-page settings-page dot-bg">
+          <view class="header">
+            <text class="header-number">750904</text>
+          </view>
+          <view class="settings-content">
+            <view class="settings-section">
+              <view class="section-title">
+                <text>个人信息</text>
+              </view>
+              <view class="settings-list">
+                <view class="settings-item" wx:for="{{settingsItems}}" wx:key="id" bindtap="navigateToSetting" data-id="{{item.id}}">
+                  <view class="settings-box"></view>
+                  <text class="settings-info">{{item.name}}</text>
+                </view>
+              </view>
+            </view>
+            <view class="settings-section">
+              <view class="section-title">
+                <text>系统设置</text>
+              </view>
+              <view class="settings-list">
+                <view class="settings-item" wx:for="{{systemSettings}}" wx:key="id" bindtap="toggleSetting" data-id="{{item.id}}">
+                  <view class="settings-box"></view>
+                  <text class="settings-info">{{item.name}}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+          <view class="bottom-section">
+            <view class="search-bar">
+              <input type="text" placeholder="搜索..." placeholder-style="color: white;" bindconfirm="onSearch"/>
+              <view class="search-icon">
+                <text class="icon">▶</text>
+              </view>
+            </view>
+            <text class="phone-number">{{phoneNumber}}</text>
+          </view>
+        </view>
+      </swiper-item>
+    </swiper>
+  </view>
+
+  <!-- WYSIWYG编辑模式 -->
+  <view class="wysiwyg-container {{wysiwygMode ? 'visible' : 'hidden'}}">
+    <view class="wysiwyg-header">
+      <view class="header-actions">
+        <text class="action-button" bindtap="exitWysiwygMode">返回</text>
+        <text class="action-button" bindtap="saveWysiwygContent">保存</text>
+        <text class="action-button" bindtap="saveDraft">草稿</text>
+        <text class="action-button" bindtap="publishContent">发布</text>
+        <text class="action-button" bindtap="togglePreviewMode">预览</text>
+        <text class="action-button add-button" bindtap="showMoreOptions">+</text>
+      </view>
+    </view>
+    
+    <!-- 编辑区域 - 手写本风格 -->
+    <view class="editor-notebook">
+      <view class="notebook-page">
+        <input class="title-input" placeholder="请输入标题..." value="{{wysiwygTitle}}" 
+               bindinput="onTitleInput" bindfocus="showKeyboard" bindblur="hideKeyboard" data-input-type="title"/>
+        <view class="content-divider"></view>
+        <textarea class="content-textarea" placeholder="请输入正文内容..." value="{{wysiwygContent}}" 
+                 bindinput="onContentInput" maxlength="-1" auto-height 
+                 bindfocus="showKeyboard" bindblur="hideKeyboard" data-input-type="content"></textarea>
+      </view>
+    </view>
+    
+    <!-- 悬浮编辑工具按钮 -->
+    <view class="editor-floating-button" catchtap="toggleMediaOptions">
+      <view class="editor-button-icon">+</view>
+    </view>
+    
+    <!-- 媒体选项弹出菜单 - 级联式 -->
+    <view class="media-options-overlay {{showMediaOptions ? 'visible' : 'hidden'}}" catchtap="hideMediaOptions"></view>
+    
+    <!-- 新的级联式媒体选项菜单 -->
+    <view class="cascading-menu {{showMediaOptions ? 'visible' : 'hidden'}}">
+      <!-- 菜单分组：内容类型 -->
+      <view class="menu-group">
+        <view class="menu-group-title">内容</view>
+        <view class="menu-items">
+          <view class="menu-item" bindtap="onMediaOptionTap" data-option="image">
+            <image class="menu-icon" src="/assets/icons/image.png"></image>
+            <text>图片</text>
+          </view>
+          <view class="menu-item" bindtap="onMediaOptionTap" data-option="handwriting">
+            <image class="menu-icon" src="/assets/icons/handwriting.png"></image>
+            <text>手写</text>
+          </view>
+          <view class="menu-item" bindtap="onMediaOptionTap" data-option="camera">
+            <image class="menu-icon" src="/assets/icons/camera.png"></image>
+            <text>拍照</text>
+          </view>
+          <view class="menu-item" bindtap="onMediaOptionTap" data-option="video">
+            <image class="menu-icon" src="/assets/icons/video.png"></image>
+            <text>视频</text>
+          </view>
+          <view class="menu-item" bindtap="onMediaOptionTap" data-option="audio">
+            <image class="menu-icon" src="/assets/icons/audio.png"></image>
+            <text>音频</text>
+          </view>
+          <view class="menu-item" bindtap="onMediaOptionTap" data-option="voice">
+            <image class="menu-icon" src="/assets/icons/voice.png"></image>
+            <text>语音</text>
+          </view>
+          <view class="menu-item" bindtap="onMediaOptionTap" data-option="custom">
+            <image class="menu-icon" src="/assets/icons/custom.png"></image>
+            <text>自定义</text>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 菜单分组：功能 -->
+      <view class="menu-group">
+        <view class="menu-group-title">功能</view>
+        <view class="menu-items">
+          <view class="menu-item" bindtap="onMediaOptionTap" data-option="share">
+            <image class="menu-icon" src="/assets/icons/share.png"></image>
+            <text>分享</text>
+          </view>
+          <view class="menu-item" bindtap="onMediaOptionTap" data-option="deepseek">
+            <image class="menu-icon" src="/assets/icons/ai.png"></image>
+            <text>DeepSeek创作</text>
+          </view>
+          <view class="menu-item" bindtap="onMediaOptionTap" data-option="save">
+            <image class="menu-icon" src="/assets/icons/save.png"></image>
+            <text>保存</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 动态键盘组件 -->
+    <view class="dynamic-keyboard {{showKeyboard ? 'visible' : 'hidden'}}">
+      <view class="keyboard-toolbar">
+        <view class="toolbar-item" bindtap="onToolbarItemTap" data-tool="emoji">
+          <image src="/assets/icons/emoji.png" mode="aspectFit"></image>
+        </view>
+        <view class="toolbar-item" bindtap="onToolbarItemTap" data-tool="voice">
+          <image src="/assets/icons/mic.png" mode="aspectFit"></image>
+        </view>
+        <view class="toolbar-item" bindtap="onToolbarItemTap" data-tool="pen">
+          <image src="/assets/icons/pen.png" mode="aspectFit"></image>
+        </view>
+        <view class="toolbar-item" bindtap="onToolbarItemTap" data-tool="search">
+          <image src="/assets/icons/search.png" mode="aspectFit"></image>
+        </view>
+        <view class="toolbar-item keyboard-toggle" bindtap="hideKeyboard">
+          <text>收起</text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 预览区域 -->
+    <view class="preview-container {{isPreviewMode ? '' : 'hide'}} {{previewSize}}">
+      <view class="preview-header">
+        <text>预览效果</text>
+        <text class="close-preview" bindtap="closePreview">关闭</text>
+      </view>
+      <view class="preview-content">
+        <view class="preview-title">{{wysiwygTitle || '无标题'}}</view>
+        <text class="preview-paragraph">{{wysiwygContent || '未添加内容'}}</text>
+      </view>
+    </view>
+  </view>
+</view> 
