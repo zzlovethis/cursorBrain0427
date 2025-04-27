@@ -1,0 +1,34 @@
+{
+  "project": {
+    "name": "cursorBrain WeChat Mini Program",
+    "description": "基于微信小程序的所见即所得编辑器项目",
+    "icon": "../images/logo.png"
+  },
+  "sync": {
+    "enabled": true,
+    "autoFetch": true,
+    "fetchInterval": 3600,
+    "pushOnCommit": true,
+    "script": "../sync.sh",
+    "defaultCommitMessage": "通过GitHub Desktop更新",
+    "logChanges": true
+  },
+  "integration": {
+    "scriptPath": ".github/scripts/desktop-integration.js",
+    "enableNotifications": true,
+    "showSuccessMessages": true,
+    "autoOpenOnChanges": true
+  },
+  "ui": {
+    "showCommitGraph": true,
+    "expandedSidebar": true,
+    "darkMode": "auto",
+    "highlightCurrentBranch": true
+  },
+  "features": {
+    "pullRequestPreview": true,
+    "codeReview": true,
+    "issueTracking": true,
+    "ciIntegration": false
+  }
+} 

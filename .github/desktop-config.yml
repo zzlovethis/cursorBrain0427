@@ -1,0 +1,21 @@
+---
+gitHubDesktop:
+  projectName: cursorBrain WeChat Mini Program
+  syncEnabled: true
+  remoteName: origin
+  remoteBranch: core
+  autoFetch: true
+  localBranch: core
+  pushOnCommit: true
+  showFileHistory: true
+
+# 这个配置文件帮助GitHub Desktop更好地理解项目结构
+directories:
+  - path: pages
+    description: 微信小程序页面文件
+  - path: utils
+    description: 实用工具函数
+  - path: images
+    description: 项目图片资源
+  - path: scripts
+    description: 项目脚本文件
