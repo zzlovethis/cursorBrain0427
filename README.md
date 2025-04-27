@@ -105,7 +105,7 @@ WeChat Mini Program project with automatic GitHub synchronization.
 
 ## Synchronization with GitHub
 
-This repository is set up to automatically synchronize with GitHub. The script `sync.sh` has been created to help with this process.
+This repository is set up to automatically synchronize with GitHub. Both command-line and GitHub Desktop methods are supported.
 
 ### Using GitHub Desktop for Synchronization
 
