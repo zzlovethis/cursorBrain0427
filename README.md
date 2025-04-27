@@ -107,6 +107,32 @@ WeChat Mini Program project with automatic GitHub synchronization.
 
 This repository is set up to automatically synchronize with GitHub. The script `sync.sh` has been created to help with this process.
 
+### Using GitHub Desktop for Synchronization
+
+如果你已经安装了GitHub Desktop，可以使用我们提供的GitHub Desktop集成助手来实现可视化同步：
+
+1. **打开GitHub Desktop查看项目**:
+   ```
+   ./github_desktop_sync.sh open
+   ```
+
+2. **提交并推送更改**:
+   ```
+   ./github_desktop_sync.sh push "提交信息"
+   ```
+
+3. **拉取最新更改**:
+   ```
+   ./github_desktop_sync.sh pull
+   ```
+
+4. **检查同步状态**:
+   ```
+   ./github_desktop_sync.sh status
+   ```
+
+这些命令会自动打开GitHub Desktop并执行相应操作，让你可以直观地看到同步过程和结果。
+
 ### Using the Sync Script
 
 The sync script provides several options:
