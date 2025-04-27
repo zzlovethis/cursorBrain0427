@@ -133,9 +133,21 @@ The sync script provides several options:
 
 ### Setting Up Automatic Synchronization
 
-To set up automatic synchronization, you can use either cron jobs (Linux/Mac) or Task Scheduler (Windows).
+#### For Mac (using LaunchAgent)
 
-#### For Mac/Linux (using cron):
+1. Copy the LaunchAgent plist file to the LaunchAgents directory:
+   ```
+   cp com.user.githubsync.plist ~/Library/LaunchAgents/
+   ```
+
+2. Load the LaunchAgent:
+   ```
+   launchctl load ~/Library/LaunchAgents/com.user.githubsync.plist
+   ```
+
+3. The script will now run at system startup and every hour to check for and push any unpushed commits.
+
+#### For Mac/Linux (using cron)
 
 1. Open Terminal and edit your crontab:
    ```
@@ -147,7 +159,7 @@ To set up automatic synchronization, you can use either cron jobs (Linux/Mac) or
    0 * * * * cd /path/to/cursorBrain0427 && ./sync.sh "Auto sync $(date)"
    ```
 
-#### For Windows (using Task Scheduler):
+#### For Windows (using Task Scheduler)
 
 1. Open Task Scheduler
 2. Create a new Basic Task
